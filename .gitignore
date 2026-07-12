@@ -1,0 +1,24 @@
+# Dependencies
+node_modules
+
+# Build output
+/dist
+/build
+/public/build
+/.cache
+/.mf
+
+# Hydrogen / Shopify local
+.env
+.env.*
+!.env.example
+.shopify
+
+# Editor / OS
+.DS_Store
+*.local
+
+# Internal client context — never commit if this repo goes public (see CLAUDE.md)
+notes/
+brief/
+research/

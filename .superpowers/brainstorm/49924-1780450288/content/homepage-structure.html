@@ -1,0 +1,55 @@
+<h2>Homepage Structure</h2>
+<p class="subtitle">How should the landing page flow from hero → brand → products?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f0ea;padding:20px;font-family:Georgia,serif;min-height:320px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start">
+      <div style="background:#d6c9b6;height:200px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.1em;color:#7a6a58;text-transform:uppercase">Full-bleed editorial photo + brand name</div>
+      <div style="background:#ede6da;height:28px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#8a7a6a;letter-spacing:.08em">↓ scroll hint</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+        <div style="background:#d6c9b6;height:80px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58;text-align:center;padding:4px">Brand story / ethos — short copy block</div>
+        <div style="background:#c8baa8;height:80px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58;text-align:center;padding:4px">Illustration or vibe photo</div>
+      </div>
+      <div style="background:#e0d8cc;height:48px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#8a7a6a;letter-spacing:.08em;text-transform:uppercase">Product carousel →</div>
+    </div>
+    <div class="card-body">
+      <h3>A — Editorial Hero → Story → Shop</h3>
+      <p>Full-bleed opening image sets the mood. Brand story beat before products. Feels more like a magazine.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f0ea;padding:20px;font-family:Georgia,serif;min-height:320px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start">
+      <div style="background:#d6c9b6;height:120px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.1em;color:#7a6a58;text-transform:uppercase">Brand name + one-line tagline, centered</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <div style="background:#c8baa8;height:140px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58;text-align:center">photo</div>
+        <div style="background:#c8baa8;height:140px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58;text-align:center">photo</div>
+        <div style="background:#c8baa8;height:140px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58;text-align:center">photo</div>
+      </div>
+      <div style="background:#e0d8cc;height:40px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#8a7a6a;letter-spacing:.08em;text-transform:uppercase">Featured products →</div>
+      <div style="background:#ede6da;height:32px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#8a7a6a">Short brand copy below</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Mosaic Entry → Products First</h3>
+      <p>Looser editorial grid above the fold. Brand identity through image arrangement. Product-forward from the start.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f0ea;padding:20px;font-family:Georgia,serif;min-height:320px;display:flex;flex-direction:column;gap:6px;justify-content:flex-start">
+      <div style="background:#d6c9b6;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden">
+        <div style="font-size:22px;letter-spacing:.18em;color:#4a3e34;text-transform:uppercase;font-family:Georgia">SEDONA LEHUA</div>
+        <div style="font-size:9px;letter-spacing:.12em;color:#7a6a58;text-transform:uppercase">beach · linen · island craft</div>
+        <div style="position:absolute;bottom:12px;right:16px;width:60px;height:60px;border:1px solid #9a8a7a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#7a6a58;text-align:center">drawing<br/>accent</div>
+      </div>
+      <div style="background:#e0d8cc;height:44px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#8a7a6a;letter-spacing:.08em;text-transform:uppercase">↓ scroll into brand world</div>
+      <div style="background:#d6c9b6;height:40px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#7a6a58">Mixed photo + drawing section</div>
+    </div>
+    <div class="card-body">
+      <h3>C — Title Card → Scroll Into Brand World</h3>
+      <p>The hero IS the brand mark — large type, minimal, with a drawing accent. Photo/product world opens below on scroll. Most Squarespace-esque.</p>
+    </div>
+  </div>
+
+</div>
