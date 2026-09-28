@@ -1,22 +1,30 @@
 import type {Route} from './+types/collections.all';
+import {isDemoStore} from '~/lib/store-mode';
 import {useLoaderData} from 'react-router';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
 import type {CollectionItemFragment} from 'storefrontapi.generated';
+import {DEMO_PRODUCTS} from '~/lib/demo-catalog';
+import {ShopGrid} from '~/components/shop/ShopGrid';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Products`}];
+  return [{title: 'Shop — Sedona Lehua'}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
+  // Demo catalog until a Shopify store is linked.
+  if (isDemoStore(args.context.env)) {
+    return {demo: true as const, demoProducts: DEMO_PRODUCTS};
+  }
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return {demo: false as const, ...deferredData, ...criticalData};
 }
 
 /**
@@ -48,11 +56,33 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function Collection() {
-  const {products} = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+  return (
+    <div className="mx-auto max-w-[1600px] px-5 pt-10 pb-24 md:px-10 md:pt-16 md:pb-36">
+      <header className="mb-10 grid gap-6 md:mb-14 md:grid-cols-12 md:items-end">
+        <h1 className="font-display text-[clamp(3rem,9vw,8rem)] leading-[0.9] md:col-span-7">
+          Shop
+        </h1>
+        <p className="max-w-sm text-[15px] leading-relaxed text-ink/75 md:col-span-5 md:justify-self-end">
+          Ready-to-wear and made-to-order pieces, cut in small runs from linen,
+          lace and cotton.
+        </p>
+      </header>
+      {data.demo ? (
+        <ShopGrid products={data.demoProducts} />
+      ) : (
+        <ShopifyCatalog products={data.products} />
+      )}
+    </div>
+  );
+}
 
+type ShopifyData = Extract<Awaited<ReturnType<typeof loader>>, {demo: false}>;
+
+/** Live Shopify catalog — restyle to match ShopGrid when the store is linked. */
+function ShopifyCatalog({products}: Pick<ShopifyData, 'products'>) {
   return (
     <div className="collection">
-      <h1>Products</h1>
       <PaginatedResourceSection<CollectionItemFragment>
         connection={products}
         resourcesClassName="products-grid"

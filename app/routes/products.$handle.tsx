@@ -1,4 +1,5 @@
 import {redirect, useLoaderData} from 'react-router';
+import {isDemoStore} from '~/lib/store-mode';
 import type {Route} from './+types/products.$handle';
 import {
   getSelectedProductOptions,
@@ -12,25 +13,38 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {DEMO_PRODUCTS, getDemoProduct} from '~/lib/demo-catalog';
+import {ProductDetail} from '~/components/shop/ProductDetail';
 
 export const meta: Route.MetaFunction = ({data}) => {
+  const product = data?.demo ? data.demoProduct : data?.product;
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+    {title: `${product?.title ?? ''} — Sedona Lehua`},
     {
       rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      href: `/products/${product?.handle}`,
     },
   ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
+  // Demo catalog until a Shopify store is linked.
+  if (isDemoStore(args.context.env)) {
+    const demoProduct = getDemoProduct(args.params.handle ?? '');
+    if (!demoProduct) throw new Response(null, {status: 404});
+    const related = DEMO_PRODUCTS.filter(
+      (p) => p.handle !== demoProduct.handle,
+    ).slice(0, 4);
+    return {demo: true as const, demoProduct, related};
+  }
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return {demo: false as const, ...deferredData, ...criticalData};
 }
 
 /**
@@ -77,8 +91,16 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+  if (data.demo)
+    return <ProductDetail product={data.demoProduct} related={data.related} />;
+  return <ShopifyProduct product={data.product} />;
+}
 
+type ShopifyData = Extract<Awaited<ReturnType<typeof loader>>, {demo: false}>;
+
+/** Live Shopify PDP — restyle to match ProductDetail when the store is linked. */
+function ShopifyProduct({product}: Pick<ShopifyData, 'product'>) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,

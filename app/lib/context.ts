@@ -2,6 +2,7 @@ import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session';
 import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {MOCK_SHOP_DOMAIN} from '~/lib/store-mode';
 
 // Define the additional context object
 const additionalContext = {
@@ -47,7 +48,12 @@ export async function createHydrogenRouterContext(
 
   const hydrogenContext = createHydrogenContext(
     {
-      env,
+      // Hydrogen only falls back to Mock.shop in dev; do it explicitly so
+      // demo-mode preview deploys (no Shopify store yet) also run.
+      env: {
+        ...env,
+        PUBLIC_STORE_DOMAIN: env.PUBLIC_STORE_DOMAIN || MOCK_SHOP_DOMAIN,
+      },
       request,
       cache,
       waitUntil,

@@ -1,4 +1,4 @@
-# Sedona Fashion — Hydrogen Scaffold Design
+# Sedona Lehua — Hydrogen Scaffold Design
 
 **Date:** 2026-07-12
 **Status:** Implemented
@@ -6,7 +6,7 @@
 
 ## What we're building
 
-A custom Shopify storefront for **Sedona Fashion**, a label selling unique dress
+A custom Shopify storefront for **Sedona Lehua**, a label selling unique dress
 attire. The site is a fully custom React app (not a Liquid theme) so the look and
 feel can be designed from scratch later.
 

@@ -108,6 +108,9 @@ type Pages = {
   "/search": {
     params: {};
   };
+  "/about": {
+    params: {};
+  };
   "/cart": {
     params: {};
   };
@@ -121,21 +124,12 @@ type Pages = {
       "*": string;
     };
   };
-  "/graphiql": {
-    params: {};
-  };
-  "/subrequest-profiler": {
-    params: {};
-  };
-  "/.well-known/appspecific/com.chrome.devtools.json": {
-    params: {};
-  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/blogs/:blogHandle/:articleHandle" | "/sitemap/:type/:page.xml" | "/blogs/:blogHandle" | "/collections/:handle" | "/account/authorize" | "/collections" | "/policies/:handle" | "/products/:handle" | "/account/logout" | "/collections/all" | "/policies" | "/account/login" | "/discount/:code" | "/sitemap.xml" | "/pages/:handle" | "/robots.txt" | "/blogs" | "/account" | "/account/orders" | "/account/orders/:id" | "/account/addresses" | "/account/profile" | "/account/*" | "/search" | "/cart" | "/cart/:lines" | "/*" | "/graphiql" | "/subrequest-profiler" | "/.well-known/appspecific/com.chrome.devtools.json";
+    page: "/" | "/blogs/:blogHandle/:articleHandle" | "/sitemap/:type/:page.xml" | "/blogs/:blogHandle" | "/collections/:handle" | "/account/authorize" | "/collections" | "/policies/:handle" | "/products/:handle" | "/account/logout" | "/collections/all" | "/policies" | "/account/login" | "/discount/:code" | "/sitemap.xml" | "/pages/:handle" | "/robots.txt" | "/blogs" | "/account" | "/account/orders" | "/account/orders/:id" | "/account/addresses" | "/account/profile" | "/account/*" | "/search" | "/about" | "/cart" | "/cart/:lines" | "/*";
   };
   "routes/blogs.$blogHandle.$articleHandle.tsx": {
     id: "routes/blogs.$blogHandle.$articleHandle";
@@ -241,6 +235,10 @@ type RouteFiles = {
     id: "routes/search";
     page: "/search";
   };
+  "routes/about.tsx": {
+    id: "routes/about";
+    page: "/about";
+  };
   "routes/cart.tsx": {
     id: "routes/cart";
     page: "/cart" | "/cart/:lines";
@@ -252,26 +250,6 @@ type RouteFiles = {
   "routes/$.tsx": {
     id: "routes/$";
     page: "/*";
-  };
-  "../node_modules/@shopify/hydrogen/dist/vite/virtual-routes/layout.jsx": {
-    id: "/Users/michaelperez-gelinas/Documents/Development/personal/SedonaFashion/node_modules/@shopify/hydrogen/dist/vite/virtual-routes/layout";
-    page: "/graphiql" | "/subrequest-profiler" | "/.well-known/appspecific/com.chrome.devtools.json" | "/";
-  };
-  "../node_modules/@shopify/hydrogen/dist/vite/virtual-routes/routes/graphiql.jsx": {
-    id: "vite/virtual-routes/routes/graphiql";
-    page: "/graphiql";
-  };
-  "../node_modules/@shopify/hydrogen/dist/vite/virtual-routes/routes/subrequest-profiler.jsx": {
-    id: "vite/virtual-routes/routes/subrequest-profiler";
-    page: "/subrequest-profiler";
-  };
-  "../node_modules/@shopify/hydrogen/dist/vite/virtual-routes/routes/[.]well-known.appspecific.com[.]chrome[.]devtools[.]json.jsx": {
-    id: "vite/virtual-routes/routes/[.]well-known.appspecific.com[.]chrome[.]devtools[.]json";
-    page: "/.well-known/appspecific/com.chrome.devtools.json";
-  };
-  "../node_modules/@shopify/hydrogen/dist/vite/virtual-routes/routes/index.jsx": {
-    id: "vite/virtual-routes/routes/index";
-    page: "/";
   };
 };
 
@@ -303,12 +281,8 @@ type RouteModules = {
   "routes/account.$": typeof import("./app/routes/account.$.tsx");
   "routes/_index": typeof import("./app/routes/_index.tsx");
   "routes/search": typeof import("./app/routes/search.tsx");
+  "routes/about": typeof import("./app/routes/about.tsx");
   "routes/cart": typeof import("./app/routes/cart.tsx");
   "routes/cart.$lines": typeof import("./app/routes/cart.$lines.tsx");
   "routes/$": typeof import("./app/routes/$.tsx");
-  "/Users/michaelperez-gelinas/Documents/Development/personal/SedonaFashion/node_modules/@shopify/hydrogen/dist/vite/virtual-routes/layout": unknown;
-  "vite/virtual-routes/routes/graphiql": unknown;
-  "vite/virtual-routes/routes/subrequest-profiler": unknown;
-  "vite/virtual-routes/routes/[.]well-known.appspecific.com[.]chrome[.]devtools[.]json": unknown;
-  "vite/virtual-routes/routes/index": unknown;
 };
