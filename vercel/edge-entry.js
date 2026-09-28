@@ -18,6 +18,19 @@ if (!globalThis.caches) {
   globalThis.caches = {open: async () => noop};
 }
 
+// Sanity's HTTP client builds `new DOMException(...)` for request timeouts, but
+// DOMException isn't constructible on Vercel Edge. Provide a minimal stand-in.
+try {
+  new DOMException('probe', 'AbortError');
+} catch {
+  globalThis.DOMException = class DOMException extends Error {
+    constructor(message = '', name = 'Error') {
+      super(message);
+      this.name = name;
+    }
+  };
+}
+
 const ENV_KEYS = [
   'SESSION_SECRET',
   'PUBLIC_STORE_DOMAIN',
