@@ -22,3 +22,9 @@ node_modules
 notes/
 brief/
 research/
+
+# TypeScript incremental cache
+tsconfig.tsbuildinfo
+
+# Vercel
+.vercel

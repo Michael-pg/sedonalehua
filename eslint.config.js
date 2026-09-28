@@ -25,6 +25,10 @@ export default [
   {
     ignores: [
       '**/node_modules/',
+      'studio/',
+      'scripts/',
+      'vercel/',
+      '.vercel/',
       '**/build/',
       '**/dist/',
       '**/*.graphql.d.ts',

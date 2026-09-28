@@ -1,4 +1,4 @@
-import {Await, Link} from 'react-router';
+import {Await, Link, useLocation} from 'react-router';
 import {Suspense, useId} from 'react';
 import type {
   CartApiQueryFragment,
@@ -7,7 +7,8 @@ import type {
 } from 'storefrontapi.generated';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
-import {Header, HeaderMenu} from '~/components/Header';
+import {Header, MobileNav} from '~/components/Header';
+import {DemoCartContents, DemoCartProvider} from '~/components/DemoCart';
 import {CartMain} from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
@@ -21,43 +22,47 @@ interface PageLayoutProps {
   header: HeaderQuery;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  isShopLinked: boolean;
   children?: React.ReactNode;
 }
 
 export function PageLayout({
   cart,
   children = null,
-  footer,
-  header,
-  isLoggedIn,
-  publicStoreDomain,
+  isShopLinked,
 }: PageLayoutProps) {
+  const {pathname} = useLocation();
+  // The home page runs full-bleed under the transparent header.
+  const fullBleed = pathname === '/';
   return (
-    <Aside.Provider>
-      <CartAside cart={cart} />
-      <SearchAside />
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-      {header && (
-        <Header
-          header={header}
-          cart={cart}
-          isLoggedIn={isLoggedIn}
-          publicStoreDomain={publicStoreDomain}
-        />
-      )}
-      <main>{children}</main>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
-    </Aside.Provider>
+    <DemoCartProvider>
+      <Aside.Provider>
+        <CartAside cart={cart} isShopLinked={isShopLinked} />
+        <SearchAside />
+        <Aside type="mobile" heading="Menu">
+          <MobileNav />
+        </Aside>
+        <Header cart={cart} isShopLinked={isShopLinked} />
+        <main className={fullBleed ? '' : 'pt-16 md:pt-20'}>{children}</main>
+        <Footer />
+      </Aside.Provider>
+    </DemoCartProvider>
   );
 }
 
-function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
+function CartAside({
+  cart,
+  isShopLinked,
+}: Pick<PageLayoutProps, 'cart' | 'isShopLinked'>) {
+  if (!isShopLinked) {
+    return (
+      <Aside type="cart" heading="Your bag">
+        <DemoCartContents />
+      </Aside>
+    );
+  }
   return (
-    <Aside type="cart" heading="CART">
+    <Aside type="cart" heading="Your bag">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
@@ -72,7 +77,7 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading="Search">
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
@@ -148,27 +153,5 @@ function SearchAside() {
         </SearchResultsPredictive>
       </div>
     </Aside>
-  );
-}
-
-function MobileMenuAside({
-  header,
-  publicStoreDomain,
-}: {
-  header: PageLayoutProps['header'];
-  publicStoreDomain: PageLayoutProps['publicStoreDomain'];
-}) {
-  return (
-    header.menu &&
-    header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="MENU">
-        <HeaderMenu
-          menu={header.menu}
-          viewport="mobile"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
-      </Aside>
-    )
   );
 }

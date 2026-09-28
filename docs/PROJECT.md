@@ -1,19 +1,19 @@
-# Sedona Fashion — Project State
+# Sedona Lehua — Project State
 
 Living log of where this project is and how it got here. Update this file as the
 project moves between phases.
 
 ## What this is
 
-A custom Shopify storefront for **Sedona Fashion**, a label selling unique dress
+A custom Shopify storefront for **Sedona Lehua**, a label selling unique dress
 attire. Built as a Hydrogen (React) app so the design is fully ownable, running
 against Mock.shop until a real Shopify store is purchased and connected.
 
 ## Current phase
 
-**Foundation — scaffold complete.** The app runs, is verified against Mock.shop,
-and is ready to (a) receive brand/design work and (b) connect to a real store
-when one exists.
+**Design — first full pass in review.** Home, Shop, PDP, About and cart are
+built on real shoot imagery (Sanity) with a demo catalog, for review with
+Sedona before Shopify is connected.
 
 ## Status snapshot
 
@@ -21,9 +21,9 @@ when one exists.
 |------|-------|
 | Architecture | Hydrogen + Oxygen (decided) |
 | Codebase | Scaffolded: TypeScript, Tailwind v4, full route set |
-| Data source | Mock.shop (no real store yet) |
-| Runs locally | Yes — `npm run dev`, homepage 200 from Mock.shop |
-| Brand / design | Not started |
+| Data source | Sanity (editorial) + demo catalog (products) |
+| Runs locally | Yes — `npm run dev`; production build verified |
+| Brand / design | First pass; type pairing undecided (3 options live) |
 | Shopify account | Not purchased |
 | Hosting / deploy | Not deployed (target: Oxygen) |
 | Git | Initialized, first commit |
@@ -39,14 +39,29 @@ when one exists.
   brainstorm (editorial-hero A/B/C options) was set aside to start from a proper
   foundation. Revisit that exploration during the design phase.
 
+- **2026-09-28 — Brand name: Sedona Lehua.**
+- **2026-09-28 — Sanity for editorial, Shopify for products.** Sanity holds the
+  hero video, lookbook imagery and copy; products stay in Shopify. Mux skipped
+  for now — one short hero loop served as an MP4 from Sanity's CDN is enough.
+- **2026-09-28 — Demo catalog.** Pages show the real pieces with placeholder
+  names/prices until Shopify is linked, rather than Mock.shop's generic stock.
+- **2026-09-28 — Homepage direction B-ish:** video hero with layered hibiscus +
+  cliffs, Ready-to-Wear row, editorial statement, horizontal journal strip,
+  split about section.
+
 ## Next steps
 
-1. **Brand direction** — identity, typography, color, tone for a dress-attire
-   label. Revisit the editorial-hero (A/B/C) homepage exploration.
-2. **Design system** — tokens, type ramp, components; replace skeleton styling.
-3. **Homepage + product/collection design** — real layouts on the Hydrogen routes.
-4. **Connect Shopify** — when purchased: `npx shopify hydrogen link`, then deploy
-   to Oxygen.
+1. **Review with Sedona** — pick a type pairing; real product names, prices,
+   copy (placeholders are marked in `demo-catalog.ts` and Sanity).
+2. **Share a preview** — decide hosting for review links (see Hosting below).
+3. **Remaining pages** — search, account, policies, 404 still use skeleton markup.
+4. **Connect Shopify** — `npx shopify hydrogen link`, restyle the Shopify code
+   paths to match the demo components, deploy to Oxygen.
+
+## Hosting
+
+Production target is **Oxygen** (Shopify's host, free with a plan). Demo mode
+now runs in production builds too, so a preview can be deployed before launch.
 
 ## Reference
 

@@ -10,13 +10,20 @@
     "preview": "shopify hydrogen preview --build",
     "lint": "eslint --no-error-on-unmatched-pattern .",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "codegen": "shopify hydrogen codegen && react-router typegen"
+    "codegen": "shopify hydrogen codegen && react-router typegen",
+    "build:vercel": "npm run build && node scripts/build-vercel.mjs"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
+    "@fontsource-variable/cormorant-garamond": "^5.3.0",
+    "@fontsource-variable/jost": "^5.3.0",
+    "@gsap/react": "^2.1.2",
+    "@sanity/client": "^8.7.0",
+    "@sanity/image-url": "^2.1.1",
     "@shopify/hydrogen": "2026.4.3",
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
+    "gsap": "^3.15.0",
     "isbot": "^5.1.22",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -63,5 +70,11 @@
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "allowScripts": {
+    "esbuild@0.27.4": true,
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true,
+    "workerd@1.20250310.0": true
+  }
 }

@@ -27,9 +27,15 @@ export default defineConfig({
        * @see https://vitejs.dev/config/dep-optimization-options
        */
       include: [
+        'rxjs',
         'react-router > set-cookie-parser',
         'react-router > cookie',
         'react-router',
+        '@sanity/client',
+        '@sanity/image-url',
+        'gsap',
+        'gsap/ScrollTrigger',
+        '@gsap/react',
       ],
     },
   },

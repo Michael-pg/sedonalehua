@@ -1,129 +1,65 @@
-import {Suspense} from 'react';
-import {Await, NavLink} from 'react-router';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {Link} from 'react-router';
+import {NAV} from '~/components/Header';
 
-interface FooterProps {
-  footer: Promise<FooterQuery | null>;
-  header: HeaderQuery;
-  publicStoreDomain: string;
-}
+const SECONDARY = [
+  {to: '/policies', label: 'Shipping & Returns'},
+  {to: '/search', label: 'Search'},
+  {to: '/account', label: 'Account'},
+];
 
-export function Footer({
-  footer: footerPromise,
-  header,
-  publicStoreDomain,
-}: FooterProps) {
+export function Footer() {
   return (
-    <Suspense>
-      <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
-          </footer>
-        )}
-      </Await>
-    </Suspense>
-  );
-}
-
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-  publicStoreDomain,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
-  publicStoreDomain: string;
-}) {
-  return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
+    <footer className="mt-auto border-t border-linen bg-sand text-ink">
+      <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-16 md:grid-cols-12 md:px-10 md:py-24">
+        <div className="md:col-span-6">
+          <p className="font-display text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] tracking-[0.08em] uppercase">
+            Sedona
+            <br />
+            Lehua
+          </p>
+        </div>
+        <nav className="flex flex-col gap-3 md:col-span-2" aria-label="Footer">
+          <p className="text-eyebrow mb-2 text-driftwood">Visit</p>
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              prefetch="intent"
+              className="hover:text-protea"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <nav className="flex flex-col gap-3 md:col-span-2" aria-label="Help">
+          <p className="text-eyebrow mb-2 text-driftwood">Help</p>
+          {SECONDARY.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              prefetch="intent"
+              className="hover:text-protea"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex flex-col gap-3 md:col-span-2">
+          <p className="text-eyebrow mb-2 text-driftwood">Follow</p>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-protea"
           >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div className="mx-auto flex max-w-[1600px] justify-between border-t border-linen px-5 py-6 text-xs text-driftwood md:px-10">
+        <span>© {new Date().getFullYear()} Sedona Lehua</span>
+        <span>Made slowly, by the water</span>
+      </div>
+    </footer>
   );
-}
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
 }

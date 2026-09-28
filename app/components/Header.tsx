@@ -1,231 +1,198 @@
-import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {Suspense, useEffect, useState} from 'react';
+import {Await, NavLink, useAsyncValue, useLocation} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
-import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {useDemoCart} from '~/components/DemoCart';
 
 interface HeaderProps {
-  header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
-  isLoggedIn: Promise<boolean>;
-  publicStoreDomain: string;
+  isShopLinked: boolean;
 }
 
-type Viewport = 'desktop' | 'mobile';
+/** Site navigation. Kept local (not the Shopify menu) while in demo mode. */
+export const NAV = [
+  {to: '/', label: 'Home'},
+  {to: '/collections/all', label: 'Shop'},
+  {to: '/about', label: 'About'},
+];
 
-export function Header({
-  header,
-  isLoggedIn,
-  cart,
-  publicStoreDomain,
-}: HeaderProps) {
-  const {shop, menu} = header;
+export function Header({cart, isShopLinked}: HeaderProps) {
+  const {pathname} = useLocation();
+  const overHero = pathname === '/';
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () =>
+      setScrolled(window.scrollY > window.innerHeight * 0.85);
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive: true});
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [pathname]);
+
+  const transparent = overHero && !scrolled;
+
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+    <header
+      className={`fixed inset-x-0 top-0 z-30 transition-[background-color,color,border-color] duration-500 ease-tide ${
+        transparent
+          ? 'border-b border-transparent text-shell'
+          : 'border-b border-linen bg-shell/90 text-ink backdrop-blur-md'
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:h-20 md:px-10">
+        <NavLink
+          to="/"
+          prefetch="intent"
+          aria-label="Sedona Lehua — home"
+          className={`font-display text-lg tracking-[0.32em] uppercase transition-opacity duration-500 md:text-xl ${
+            transparent ? 'pointer-events-none opacity-0' : 'opacity-100'
+          }`}
+        >
+          Sedona Lehua
+        </NavLink>
+
+        <nav className="hidden items-center gap-10 md:flex" aria-label="Main">
+          {NAV.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end
+              prefetch="intent"
+              className={({isActive}) =>
+                `text-eyebrow relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-current after:transition-transform after:duration-500 after:ease-tide hover:after:scale-x-100 ${
+                  isActive ? 'after:scale-x-100' : 'after:scale-x-0'
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+          <CartToggle cart={cart} isShopLinked={isShopLinked} />
+        </nav>
+
+        <div className="flex items-center gap-5 md:hidden">
+          <CartToggle cart={cart} isShopLinked={isShopLinked} />
+          <MenuToggle />
+        </div>
+      </div>
     </header>
   );
 }
 
-export function HeaderMenu({
-  menu,
-  primaryDomainUrl,
-  viewport,
-  publicStoreDomain,
-}: {
-  menu: HeaderProps['header']['menu'];
-  primaryDomainUrl: HeaderProps['header']['shop']['primaryDomain']['url'];
-  viewport: Viewport;
-  publicStoreDomain: HeaderProps['publicStoreDomain'];
-}) {
-  const className = `header-menu-${viewport}`;
+export function MobileNav() {
   const {close} = useAside();
-
   return (
-    <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
+    <nav className="flex flex-col gap-6 px-6 py-10" aria-label="Mobile">
+      {NAV.map((item) => (
         <NavLink
+          key={item.to}
+          to={item.to}
           end
-          onClick={close}
           prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
+          onClick={close}
+          className="font-display text-4xl"
         >
-          Home
+          {item.label}
         </NavLink>
-      )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
-
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={close}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
+      ))}
     </nav>
   );
 }
 
-function HeaderCtas({
-  isLoggedIn,
-  cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
-  return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await>
-        </Suspense>
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
-  );
-}
-
-function HeaderMenuMobileToggle() {
+function MenuToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
       onClick={() => open('mobile')}
+      aria-label="Open menu"
+      className="flex flex-col gap-1.5 py-2"
     >
-      <h3>☰</h3>
+      <span className="block h-px w-6 bg-current" />
+      <span className="block h-px w-6 bg-current" />
     </button>
   );
 }
 
-function SearchToggle() {
-  const {open} = useAside();
+function BagIcon() {
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
-    </button>
+    <svg
+      width="20"
+      height="22"
+      viewBox="0 0 20 22"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M2 6.5h16l-1.2 14H3.2L2 6.5Z"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <path
+        d="M6.5 8.5V5a3.5 3.5 0 0 1 7 0v3.5"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+    </svg>
   );
 }
 
-function CartBadge({count}: {count: number}) {
+function CartBadge({count, onOpen}: {count: number; onOpen?: () => void}) {
   const {open} = useAside();
-  const {publish, shop, cart, prevCart} = useAnalytics();
-
   return (
     <a
       href="/cart"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
-        publish('cart_viewed', {
-          cart,
-          prevCart,
-          shop,
-          url: window.location.href || '',
-        } as CartViewPayload);
+        onOpen?.();
       }}
+      className="relative flex items-center"
+      aria-label={`Bag, ${count} ${count === 1 ? 'item' : 'items'}`}
     >
-      Cart <span aria-label={`(items: ${count})`}>{count}</span>
+      <BagIcon />
+      <span className="absolute -right-2 -top-1 min-w-4 text-center text-[10px] leading-4 tabular-nums">
+        {count > 0 ? count : ''}
+      </span>
     </a>
   );
 }
 
-function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
+function CartToggle({cart, isShopLinked}: HeaderProps) {
+  if (!isShopLinked) return <DemoCartBadge />;
   return (
     <Suspense fallback={<CartBadge count={0} />}>
       <Await resolve={cart}>
-        <CartBanner />
+        <ShopifyCartBadge />
       </Await>
     </Suspense>
   );
 }
 
-function CartBanner() {
-  const originalCart = useAsyncValue() as CartApiQueryFragment | null;
-  const cart = useOptimisticCart(originalCart);
-  return <CartBadge count={cart?.totalQuantity ?? 0} />;
+function DemoCartBadge() {
+  const {count} = useDemoCart();
+  return <CartBadge count={count} />;
 }
 
-const FALLBACK_HEADER_MENU = {
-  id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Collections',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Blog',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Policies',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
-      tags: [],
-      title: 'About',
-      type: 'PAGE',
-      url: '/pages/about',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
+function ShopifyCartBadge() {
+  const originalCart = useAsyncValue() as CartApiQueryFragment | null;
+  const cart = useOptimisticCart(originalCart);
+  const {publish, shop, prevCart} = useAnalytics();
+  return (
+    <CartBadge
+      count={cart?.totalQuantity ?? 0}
+      onOpen={() =>
+        publish('cart_viewed', {
+          cart,
+          prevCart,
+          shop,
+          url: window.location.href || '',
+        } as CartViewPayload)
+      }
+    />
+  );
 }
