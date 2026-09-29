@@ -55,7 +55,10 @@ Sedona before Shopify is connected.
    copy (placeholders are marked in `demo-catalog.ts` and Sanity).
 2. **Share a preview** — decide hosting for review links (see Hosting below).
 3. **Remaining pages** — search, account, policies, 404 still use skeleton markup.
-4. **Connect Shopify** — `npx shopify hydrogen link`, restyle the Shopify code
+4. **More product photos** — Sedona is shooting more pieces. Add them to
+   `demo-catalog.ts` and the home `featured` list; the home "Shop all" tile
+   hides itself once the row count is a multiple of 3.
+5. **Connect Shopify** — `npx shopify hydrogen link`, restyle the Shopify code
    paths to match the demo components, deploy to Oxygen.
 
 ## Hosting

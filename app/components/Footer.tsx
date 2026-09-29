@@ -3,7 +3,6 @@ import {NAV} from '~/components/Header';
 
 const SECONDARY = [
   {to: '/policies', label: 'Shipping & Returns'},
-  {to: '/search', label: 'Search'},
   {to: '/account', label: 'Account'},
 ];
 
@@ -12,7 +11,7 @@ export function Footer() {
     <footer className="mt-auto border-t border-linen bg-sand text-ink">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-16 md:grid-cols-12 md:px-10 md:py-24">
         <div className="md:col-span-6">
-          <p className="font-display text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] tracking-[0.08em] uppercase">
+          <p className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1] tracking-[0.08em] uppercase">
             Sedona
             <br />
             Lehua

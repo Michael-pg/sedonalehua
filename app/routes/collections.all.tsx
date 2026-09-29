@@ -60,7 +60,7 @@ export default function Collection() {
   return (
     <div className="mx-auto max-w-[1600px] px-5 pt-10 pb-24 md:px-10 md:pt-16 md:pb-36">
       <header className="mb-10 grid gap-6 md:mb-14 md:grid-cols-12 md:items-end">
-        <h1 className="font-display text-[clamp(3rem,9vw,8rem)] leading-[0.9] md:col-span-7">
+        <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[0.95] md:col-span-7">
           Shop
         </h1>
         <p className="max-w-sm text-[15px] leading-relaxed text-ink/75 md:col-span-5 md:justify-self-end">

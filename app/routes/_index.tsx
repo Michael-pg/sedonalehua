@@ -5,8 +5,7 @@ import {sanity} from '~/lib/sanity.server';
 import {DEMO_PRODUCTS} from '~/lib/demo-catalog';
 import {Hero} from '~/components/home/Hero';
 import {ReadyToWear} from '~/components/home/ReadyToWear';
-import {Statement} from '~/components/home/Statement';
-import {Journal} from '~/components/home/Journal';
+import {Gallery} from '~/components/home/Gallery';
 import {AboutSplit} from '~/components/home/AboutSplit';
 
 export const meta: Route.MetaFunction = () => {
@@ -29,6 +28,8 @@ export async function loader() {
     'lace-poncho-top',
     'tiered-cotton-sundress',
     'striped-ruffle-gown',
+    'striped-tie-shoulder-dress',
+    'sculpted-bridal-gown',
   ]
     .map((handle) => DEMO_PRODUCTS.find((p) => p.handle === handle)!)
     .filter(Boolean);
@@ -45,17 +46,15 @@ export default function Homepage() {
         heading={home.readyToWearHeading ?? 'Ready-to-Wear'}
         products={featured}
       />
-      {home.statement && (
-        <Statement text={home.statement} images={home.statementImages} />
-      )}
-      {home.journalImages?.length ? (
-        <Journal
-          eyebrow={home.journalEyebrow}
-          title={home.journalTitle}
-          issue={home.journalIssue}
-          images={home.journalImages}
-        />
-      ) : null}
+      {/* Statement + Journal sections hidden per client review (2026-09-29);
+          components kept in components/home/ in case they come back. */}
+      <Gallery
+        images={(home.journalImages ?? []).filter(
+          // Skip shots already used as a product's lead image in the row above.
+          (img) =>
+            !featured.some((p) => p.images[0].asset?._ref === img.asset?._ref),
+        )}
+      />
       <AboutSplit
         heading={home.aboutHeading}
         body={home.aboutBody}
