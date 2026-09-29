@@ -50,7 +50,7 @@ export function ReadyToWear({
         </Link>
       </div>
 
-      <ul className="mx-auto -mx-5 flex max-w-[1600px] snap-x snap-mandatory scroll-px-5 gap-2 overflow-x-auto px-5 md:mx-auto md:grid md:grid-cols-3 md:gap-0 md:overflow-visible md:px-0">
+      <ul className="mx-auto -mx-5 flex max-w-[1600px] snap-x snap-mandatory scroll-px-5 gap-2 overflow-x-auto px-5 md:mx-auto md:grid md:grid-cols-3 md:gap-x-0 md:gap-y-12 md:overflow-visible md:px-0">
         {products.map((product, i) => (
           <li
             key={product.handle}
@@ -98,6 +98,24 @@ export function ReadyToWear({
             </Link>
           </li>
         ))}
+        {/* Fills the last slot while the catalog is short of a full row;
+            disappears once there are enough products. */}
+        {products.length % 3 !== 0 && (
+          <li className="w-[78vw] shrink-0 snap-start md:w-auto">
+            <Link
+              to="/collections/all"
+              prefetch="intent"
+              className="group flex aspect-[3/4] flex-col items-center justify-center gap-4 bg-sand text-center transition-colors duration-700 ease-tide hover:bg-linen"
+            >
+              <span className="font-display text-3xl italic md:text-4xl">
+                The full collection
+              </span>
+              <span className="text-eyebrow border-b border-current pb-0.5">
+                Shop all
+              </span>
+            </Link>
+          </li>
+        )}
       </ul>
     </section>
   );
